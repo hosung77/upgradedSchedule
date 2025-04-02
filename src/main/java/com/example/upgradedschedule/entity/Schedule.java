@@ -37,4 +37,14 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name="user_id")
     private User user;
 
+    public void setUser(User user){
+        this.user = user;
+    }
+
+    public Schedule(String title, String content,String schedulePassword,LocalDateTime scheduleDate){
+        this.title = title;
+        this.content = content;
+        this.schedulePassword = schedulePassword;
+        this.scheduleDate = scheduleDate;
+    }
 }
