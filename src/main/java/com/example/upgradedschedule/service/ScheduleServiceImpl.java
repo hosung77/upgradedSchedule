@@ -5,6 +5,7 @@ import com.example.upgradedschedule.entity.Schedule;
 import com.example.upgradedschedule.entity.User;
 import com.example.upgradedschedule.repository.ScheduleRepository;
 import com.example.upgradedschedule.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
+    @Transactional
     public List<ScheduleResponseDto> findAll() {
 
        return scheduleRepository.findAll().stream().map(ScheduleResponseDto::toDto).toList();
@@ -37,6 +39,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
+    @Transactional
     public ScheduleResponseDto findById(Long scheduleId) {
 
         Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("일정을 찾을 수 없습니다."));
@@ -45,6 +48,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
+    @Transactional
     public void delete(Long scheduleId) {
 
         Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("게시물이 존재하지 않습니다."));

@@ -1,7 +1,9 @@
 package com.example.upgradedschedule.repository;
 
+import com.example.upgradedschedule.dto.UserResponseDto;
 import com.example.upgradedschedule.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User,Long> {
+
 }
