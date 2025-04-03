@@ -1,9 +1,6 @@
 package com.example.upgradedschedule.controller;
 
 import com.example.upgradedschedule.dto.*;
-import com.example.upgradedschedule.repository.ScheduleRepository;
-import com.example.upgradedschedule.repository.UserRepository;
-import com.example.upgradedschedule.service.ScheduleService;
 import com.example.upgradedschedule.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +16,7 @@ public class UserController {
 
     private final UserService userService;
 
+    // 회원 등록
     @PostMapping("/signUp")
     public ResponseEntity<UserResponseDto> signUp(@RequestBody UserRequestDto ud){
 
@@ -27,6 +25,7 @@ public class UserController {
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
+    // 특정 유저 조회
     @GetMapping("/{userId}")
     public ResponseEntity<UserInfoDto> findUserById(@PathVariable Long userId){
 
@@ -35,6 +34,7 @@ public class UserController {
         return new ResponseEntity<>(userInfo,HttpStatus.OK);
     }
 
+    // 모든 유저 조회
     @GetMapping("/all")
     public ResponseEntity<List<UserInfoDto>> findAll(){
 
@@ -43,6 +43,7 @@ public class UserController {
         return new ResponseEntity<>(users,HttpStatus.OK);
     }
 
+    // 유저 정보 수정
     @PatchMapping("/{userId}")
     public ResponseEntity<UpdateResponseDto> update(@PathVariable Long userId, @RequestBody UpdateRequestDto up){
 
@@ -51,6 +52,7 @@ public class UserController {
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 
+    // 유저 삭제
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> delete(@PathVariable Long userId){
 

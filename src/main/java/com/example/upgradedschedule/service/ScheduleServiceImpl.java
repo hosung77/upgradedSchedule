@@ -7,9 +7,11 @@ import com.example.upgradedschedule.repository.ScheduleRepository;
 import com.example.upgradedschedule.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,7 +22,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     private final UserRepository userRepository;
 
     @Override
-    public ScheduleResponseDto post(Long userId, String content, LocalDateTime scheduleDate, String title, String schedulePassword) {
+    public ScheduleResponseDto post(Long userId, String content, LocalDate scheduleDate, String title, String schedulePassword) {
         User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Schedule schedule = new Schedule(title,content,schedulePassword,scheduleDate);
         schedule.setUser(user);
@@ -55,5 +57,20 @@ public class ScheduleServiceImpl implements ScheduleService{
 
         scheduleRepository.delete(sc);
 
+    }
+
+    @Override
+    @Transactional
+    public ScheduleResponseDto update(Long scheduleId, String title, String content, LocalDate scheduleDate, String schedulePassword) {
+
+        Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("일정을 찾을 수 없습니다."));
+
+        if (!sc.getSchedulePassword().equals(schedulePassword)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다.");
+        }
+
+        sc.update(title, content, scheduleDate);
+
+        return ScheduleResponseDto.toDto(sc);
     }
 }

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -31,7 +31,7 @@ public class Schedule extends BaseEntity {
     private String schedulePassword;
 
     @Column(nullable = false)
-    private LocalDateTime scheduleDate;
+    private LocalDate scheduleDate;
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -41,10 +41,23 @@ public class Schedule extends BaseEntity {
         this.user = user;
     }
 
-    public Schedule(String title, String content,String schedulePassword,LocalDateTime scheduleDate){
+    public Schedule(String title, String content,String schedulePassword, LocalDate scheduleDate){
         this.title = title;
         this.content = content;
         this.schedulePassword = schedulePassword;
         this.scheduleDate = scheduleDate;
     }
+
+    public void update(String title, String content, LocalDate scheduleDate) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+        if (scheduleDate != null){
+            this.scheduleDate = scheduleDate;
+        }
+    }
+
 }
