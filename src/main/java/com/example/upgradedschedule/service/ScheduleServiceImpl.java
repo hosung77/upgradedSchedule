@@ -3,6 +3,8 @@ package com.example.upgradedschedule.service;
 import com.example.upgradedschedule.dto.ScheduleResponseDto;
 import com.example.upgradedschedule.entity.Schedule;
 import com.example.upgradedschedule.entity.User;
+import com.example.upgradedschedule.exception.CustomException;
+import com.example.upgradedschedule.exception.ErrorCode;
 import com.example.upgradedschedule.repository.ScheduleRepository;
 import com.example.upgradedschedule.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -23,7 +25,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     public ScheduleResponseDto post(Long userId, String content, LocalDate scheduleDate, String title, String schedulePassword) {
-        User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
         Schedule schedule = new Schedule(title,content,schedulePassword,scheduleDate);
         schedule.setUser(user);
 
@@ -34,26 +36,41 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     @Transactional
-    public List<ScheduleResponseDto> findAll() {
+    public List<ScheduleResponseDto> findAll(Long userId) {
 
-       return scheduleRepository.findAll().stream().map(ScheduleResponseDto::toDto).toList();
+        return scheduleRepository.findAllByUser_UserId(userId)
+                .stream()
+                .map(ScheduleResponseDto::toDto)
+                .toList();
        
     }
 
     @Override
     @Transactional
-    public ScheduleResponseDto findById(Long scheduleId) {
+    public ScheduleResponseDto findById(Long scheduleId, Long userId) {
 
-        Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("일정을 찾을 수 없습니다."));
+        Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
+
+        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if(!sc.getUser().getUserId().equals(user.getUserId())){
+            throw new CustomException(ErrorCode.SCHEDULE_ACCESS_FORBIDDEN);
+        }
 
         return ScheduleResponseDto.toDto(sc);
     }
 
     @Override
     @Transactional
-    public void delete(Long scheduleId) {
+    public void delete(Long scheduleId, Long userId) {
 
-        Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+        Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
+
+        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if(!sc.getUser().getUserId().equals(user.getUserId())){
+            throw new CustomException(ErrorCode.ACCOUNT_DELETE_FORBIDDEN);
+        }
 
         scheduleRepository.delete(sc);
 
@@ -61,12 +78,17 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     @Transactional
-    public ScheduleResponseDto update(Long scheduleId, String title, String content, LocalDate scheduleDate, String schedulePassword) {
+    public ScheduleResponseDto update(Long scheduleId, String title, String content, LocalDate scheduleDate, String schedulePassword, Long userId) {
 
         Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("일정을 찾을 수 없습니다."));
+        User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+        if(!sc.getUser().getUserId().equals(user.getUserId())){
+            throw new CustomException(ErrorCode.SCHEDULE_FORBIDDEN);
+        }
 
         if (!sc.getSchedulePassword().equals(schedulePassword)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
         sc.update(title, content, scheduleDate);
