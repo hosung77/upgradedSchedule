@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,5 +22,5 @@ public class ScheduleRequestDto {
     private String schedulePassword;
 
     @JsonFormat(pattern = "yyyy-MM-dd")  // 연-월-일 형식
-    private LocalDateTime scheduleDate;
+    private LocalDate scheduleDate;
 }
