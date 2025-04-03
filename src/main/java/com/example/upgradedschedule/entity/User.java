@@ -33,4 +33,19 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Schedule> schedules = new ArrayList<>();
 
+    public User(String userEmail, String userName, String userPassword){
+        this.userEmail = userEmail;
+        this.userName = userName;
+        this.userPassword = userPassword;
+    }
+
+    public void updateUserInfo(String userNewEmail, String userNewPassword) {
+        if (userNewEmail != null) {
+            this.userEmail = userNewEmail;
+        }
+        if (userNewPassword != null) {
+            this.userPassword = userNewPassword;
+        }
+    }
+
 }
