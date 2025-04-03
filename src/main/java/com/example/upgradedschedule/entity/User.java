@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Slf4j
 @Table(name = "user")
 public class User extends BaseEntity {
 
@@ -45,6 +47,14 @@ public class User extends BaseEntity {
         }
         if (userNewPassword != null) {
             this.userPassword = userNewPassword;
+        }
+    }
+
+    public void checkUser(String userEmail, String userPassword){
+        if(!(this.userEmail.equals(userEmail) && this.userPassword.equals(userPassword))){
+            throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못되었습니다.");
+        } else {
+                log.info("사용자 정보가 일치합니다.");
         }
     }
 
