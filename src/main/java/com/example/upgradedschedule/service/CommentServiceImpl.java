@@ -102,7 +102,7 @@ public class CommentServiceImpl implements CommentService{
         }
 
         if(!sc.getUser().getUserId().equals(userId)){
-            throw new CustomException(ErrorCode.COMMENT_DELETE_FORBIDDEN_);
+            throw new CustomException(ErrorCode.COMMENT_DELETE_FORBIDDEN);
         }
 
         commentRepository.delete(comment);

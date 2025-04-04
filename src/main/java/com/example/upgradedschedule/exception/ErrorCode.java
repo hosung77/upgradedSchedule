@@ -21,7 +21,7 @@ public enum ErrorCode {
 
     // 댓글
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"일치하는 스케줄이 없습니다."),
-    COMMENT_DELETE_FORBIDDEN_(HttpStatus.FORBIDDEN, "댓글 작성자만 삭제가 가능합니다.");
+    COMMENT_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "댓글 작성자만 삭제가 가능합니다.");
 
     private final HttpStatus status;
     private final String message;

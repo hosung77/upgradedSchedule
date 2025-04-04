@@ -3,11 +3,13 @@ package com.example.upgradedschedule.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 public class CommentRequestDto {
 
     @NotBlank(message = "댓글 내용을 입력해주세요.")
+    @Length(max=15)
     private String commentContent;
 
     @NotBlank(message = "댓글 비밀번호를 입력해주세요.")
