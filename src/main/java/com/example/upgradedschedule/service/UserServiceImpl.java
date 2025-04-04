@@ -1,12 +1,12 @@
 package com.example.upgradedschedule.service;
 
+import com.example.upgradedschedule.config.PasswordEncoder;
 import com.example.upgradedschedule.dto.UpdateResponseDto;
 import com.example.upgradedschedule.dto.UserInfoDto;
 import com.example.upgradedschedule.dto.UserResponseDto;
 import com.example.upgradedschedule.entity.User;
 import com.example.upgradedschedule.exception.CustomException;
 import com.example.upgradedschedule.exception.ErrorCode;
-import com.example.upgradedschedule.repository.ScheduleRepository;
 import com.example.upgradedschedule.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -22,10 +22,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto signUp(String userEmail, String userName, String userPassword) {
-        User user  = new User(userEmail, userName, userPassword);
+        String hashedPassword = passwordEncoder.encode(userPassword);
+
+        User user  = new User(userEmail, userName, hashedPassword);
 
         userRepository.save(user);
 
@@ -50,7 +53,7 @@ public class UserServiceImpl implements UserService {
     public UpdateResponseDto update(Long userId, String userEmail, String userPassword, String newUserPassword) {
         User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if(!user.getUserPassword().equals(userPassword)){
+        if(!passwordEncoder.matches(userPassword,user.getUserPassword())){
             throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
@@ -75,7 +78,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 비밀번호 검증 (현재 String 비교)
-        if (!user.getUserPassword().equals(userPassword)) {
+        if (!passwordEncoder.matches(userPassword,user.getUserPassword())) {
             throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
