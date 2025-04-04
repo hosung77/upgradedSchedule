@@ -1,6 +1,7 @@
 package com.example.upgradedschedule.service;
 
 import com.example.upgradedschedule.config.PasswordEncoder;
+import com.example.upgradedschedule.dto.CommentAllResponseDto;
 import com.example.upgradedschedule.dto.ScheduleResponseDto;
 import com.example.upgradedschedule.entity.Schedule;
 import com.example.upgradedschedule.entity.User;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +39,20 @@ public class ScheduleServiceImpl implements ScheduleService{
 
         scheduleRepository.save(schedule);
 
-        return new ScheduleResponseDto(schedule.getUser().getUserName(), schedule.getScheduleId(),schedule.getScheduleDate(),schedule.getTitle(),schedule.getContent());
+        // 댓글 리스트를 CommentAllResponseDto 리스트로 변환
+        List<CommentAllResponseDto> commentDtos = schedule.getComments().stream()
+                .map(CommentAllResponseDto::toDto)
+                .collect(Collectors.toList());
+
+        return new ScheduleResponseDto(
+                schedule.getUser().getUserName(),
+                schedule.getScheduleId(),
+                schedule.getScheduleDate(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                commentDtos // 변환된 댓글 리스트를 반환
+        );
+
     }
 
     @Override
@@ -98,6 +113,8 @@ public class ScheduleServiceImpl implements ScheduleService{
         }
 
         sc.update(title, content, scheduleDate);
+
+        scheduleRepository.save(sc);
 
         return ScheduleResponseDto.toDto(sc);
     }

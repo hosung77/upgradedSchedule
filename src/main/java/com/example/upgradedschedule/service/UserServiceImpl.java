@@ -59,6 +59,8 @@ public class UserServiceImpl implements UserService {
 
         user.updateUserInfo(userEmail,newUserPassword);
 
+        userRepository.save(user);
+
         return new UpdateResponseDto(user);
     }
 

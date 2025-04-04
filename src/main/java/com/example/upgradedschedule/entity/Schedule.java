@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -36,6 +38,9 @@ public class Schedule extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<Comment> comments = new ArrayList<>();
 
     public void setUser(User user){
         this.user = user;
