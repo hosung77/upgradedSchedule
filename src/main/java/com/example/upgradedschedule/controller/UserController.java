@@ -6,6 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class UserController {
 
     // 회원 등록
     @PostMapping("/signup")
-    public ResponseEntity<UserResponseDto> signUp(@RequestBody UserRequestDto ud){
+    public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody UserRequestDto ud){
 
         UserResponseDto dto = userService.signUp(ud.getUserEmail(),ud.getUserName(),ud.getUserPassword());
 
@@ -31,7 +32,7 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<String> Login(@RequestBody LoginRequestDto dto, HttpServletRequest request){
+    public ResponseEntity<String> Login(@Valid @RequestBody LoginRequestDto dto, HttpServletRequest request){
 
         userService.login(dto.getUserEmail(), dto.getUserPassword(), request);
 
@@ -69,7 +70,7 @@ public class UserController {
 
     // 유저 정보 수정
     @PatchMapping("/edit")
-    public ResponseEntity<UpdateResponseDto> update(HttpServletRequest request, @RequestBody UpdateRequestDto up){
+    public ResponseEntity<UpdateResponseDto> update(HttpServletRequest request, @Valid @RequestBody UpdateRequestDto up){
 
         // false를 넣은 이유는 새로운 세션을 만들지 않기 위해서이다.
         HttpSession session = request.getSession(false);

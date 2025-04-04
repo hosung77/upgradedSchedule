@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class UpdateRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "비밀번호를 입력해주세요.")
     private String userPassword;
 
     @Nullable
@@ -16,4 +16,5 @@ public class UpdateRequestDto {
 
     @Nullable
     private String newPassword;
+
 }

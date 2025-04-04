@@ -8,6 +8,7 @@ import com.example.upgradedschedule.service.ScheduleService;
 import com.example.upgradedschedule.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class ScheduleController {
 
     // 일정 등록
     @PostMapping("/post")
-    public ResponseEntity<ScheduleResponseDto> post(HttpServletRequest request, @RequestBody ScheduleRequestDto scheduleRequestDto){
+    public ResponseEntity<ScheduleResponseDto> post(HttpServletRequest request, @Valid @RequestBody ScheduleRequestDto scheduleRequestDto){
         HttpSession session = request.getSession(false);
 
         Long userId = (Long) session.getAttribute("sessionKey");
@@ -74,7 +75,7 @@ public class ScheduleController {
 
     // 일정 수정(원하는 값만 수정 가능)
     @PatchMapping("/edit/{scheduleId}")
-    public ResponseEntity<ScheduleResponseDto> update(@RequestBody EditScheduleRequestDto dto, @PathVariable Long scheduleId, HttpServletRequest request){
+    public ResponseEntity<ScheduleResponseDto> update(@Valid @RequestBody EditScheduleRequestDto dto, @PathVariable Long scheduleId, HttpServletRequest request){
 
         HttpSession session = request.getSession(false);
 
