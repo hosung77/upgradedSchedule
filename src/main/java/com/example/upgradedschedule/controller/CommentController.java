@@ -56,7 +56,7 @@ public class CommentController {
 
     // 댓글 삭제
     @DeleteMapping(value="/delete/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> delete(@PathVariable Long scheduleId, @PathVariable Long commentId, HttpServletRequest request, @RequestBody CommentDeleteRequestDto dto){
+    public ResponseEntity<String> delete(@PathVariable Long scheduleId, @PathVariable Long commentId, HttpServletRequest request, @Valid @RequestBody CommentDeleteRequestDto dto){
 
         HttpSession session = request.getSession(false);
 
