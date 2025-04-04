@@ -1,5 +1,6 @@
 package com.example.upgradedschedule.service;
 
+import com.example.upgradedschedule.config.PasswordEncoder;
 import com.example.upgradedschedule.dto.ScheduleResponseDto;
 import com.example.upgradedschedule.entity.Schedule;
 import com.example.upgradedschedule.entity.User;
@@ -22,11 +23,16 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ScheduleResponseDto post(Long userId, String content, LocalDate scheduleDate, String title, String schedulePassword) {
         User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Schedule schedule = new Schedule(title,content,schedulePassword,scheduleDate);
+
+        String hashedPassword = passwordEncoder.encode(schedulePassword);
+
+        Schedule schedule = new Schedule(title,content,hashedPassword,scheduleDate);
+
         schedule.setUser(user);
 
         scheduleRepository.save(schedule);
@@ -87,7 +93,7 @@ public class ScheduleServiceImpl implements ScheduleService{
             throw new CustomException(ErrorCode.SCHEDULE_FORBIDDEN);
         }
 
-        if (!sc.getSchedulePassword().equals(schedulePassword)){
+        if (!passwordEncoder.matches(schedulePassword,sc.getSchedulePassword())){
             throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
