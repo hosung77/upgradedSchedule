@@ -22,9 +22,10 @@ public class EditScheduleRequestDto {
     @Nullable
     private String content;
 
-    @NotBlank
+    @NotBlank(message = "일정 수정을 위해서 일정 비밀번호를 입력해주세요. 비밀번호는 숫자 4자리 이상입니다.")
     private String schedulePassword;
 
+    @NotBlank(message = "날짜를 입력해주세요.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate scheduleDate;
 
