@@ -101,8 +101,8 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Transactional
     public ScheduleResponseDto update(Long scheduleId, String title, String content, LocalDate scheduleDate, String schedulePassword, Long userId) {
 
-        Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new IllegalArgumentException("일정을 찾을 수 없습니다."));
-        User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        Schedule sc = scheduleRepository.findById(scheduleId).orElseThrow(()-> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if(!sc.getUser().getUserId().equals(user.getUserId())){
             throw new CustomException(ErrorCode.SCHEDULE_FORBIDDEN);
